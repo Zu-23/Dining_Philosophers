@@ -11,96 +11,126 @@ typedef enum status
 
 typedef struct philo_attr
 {
-	int			philo_id;
-	pthread_t	philo_thread;
-	int			time_last_meal;
+	int				ph_id;
+	int				time_last_meal;
+	int				sleep_time;
+	int				eat_time;
+	int				num_of_philos;
+	int				*philo_died;
+	pthread_t		philo_thread;
 	pthread_mutex_t	fork;
-	
-}philo_attr;
+	pthread_mutex_t *lock;
+}t_philo_attr;
 
 typedef struct variables
 {
 	int				num_of_philos;
+	int				philo_died;
 	pthread_mutex_t lock;
-	philo_attr		*philos;
+	t_philo_attr	*philos;
 
-}var;
+}t_var;
 
-void	pick_up_forks(var*);
+void	pick_up_forks(t_philo_attr *);
 void    *philosopher(void *param)
 {
-	var *ph = (var *)param;
-
+	t_philo_attr *philo = (t_philo_attr *)param;
 	int i = 0;
-	while (i++ < 10)
+	while (i < 8)
 	{
+		i++;
 		// think();
 		// lock(mutex);
-		pick_up_forks(ph);
+		pick_up_forks(philo);
 		// eat();
 		// put_fork(l);
 		// put_fork(r);
 		// unlock(mutex);
 	}
+	return (NULL);
 }
-void	terminate(var *ph)
+
+void	terminate(t_var *ph)
 {
 	int i;
 
-	i = 0;
-	while (i < ph->num_of_philos)
-	{
+	i = -1;
+	while (++i < ph->num_of_philos)
 		pthread_mutex_destroy(&ph->philos[i].fork);
+	i = -1;
+	while (++i < ph->num_of_philos)
 		pthread_join(ph->philos[i].philo_thread, NULL);
-		i++;
-	}
 }
-void	pick_up_forks(var *ph)
+
+void	pick_up_forks_two(t_philo_attr *philo)
 {
+	int	id;
+
+	id = philo->ph_id;
+	pthread_mutex_lock(&philo->fork);
+	pthread_mutex_lock(&philo[id + 1].fork);
+	if (*philo->philo_died != 1)
+	{
+		printf("%d has taken a fork\n", philo->ph_id);
+	}
+	pthread_mutex_unlock(&philo->fork);
+	pthread_mutex_unlock(&philo[id + 1].fork);
+}
+
+void	pick_up_forks(t_philo_attr *philo)
+{
+	int i;
 	int id;
 
-	int i = 0;
-	while (i < 3)
+	id = philo->ph_id;
+	i = 0;
+	if (philo->ph_id % 2 == 0 && philo->ph_id + 1 != philo->num_of_philos)
 	{
-		id = ph->philos[i].philo_id;
-		printf("%d\n",id);
-		i++;
-
-	}
-	if (ph->philos[id].philo_id % 2 == 0 && ph->philos[id + 1].philo_id != ph->num_of_philos)
-	{
-		pthread_mutex_lock(&ph->philos[id].fork);
-		pthread_mutex_lock(&ph->philos[id + 1].fork);
-		printf("\n",id);
-		pthread_mutex_unlock(&ph->philos[id].fork);
-		pthread_mutex_unlock(&ph->philos[id + 1].fork);
+		pthread_mutex_lock(&philo->fork);
+		pthread_mutex_lock(&philo[id + 1].fork);
+		if (*philo->philo_died != 1)
+		{
+			printf("%d has taken a fork\n", philo->ph_id);
+		}
+		pthread_mutex_unlock(&philo->fork);
+		pthread_mutex_unlock(&philo[id + 1].fork);
 
 	}
 	else
-		printf("we shall see\n");
+		pick_up_forks_two(philo);
 }
-void	init(var *ph)
+
+void	init(t_var *ph)
 {
 	int i;
 
 	i = 0;
 	while (i < ph->num_of_philos)
 	{
-		ph->philos[i].philo_id = i;
-		pthread_mutex_init(&ph->philos[i].fork, NULL);
-		pthread_create(&ph->philos[i].philo_thread, NULL, philosopher, ph);
+		ph->philos[i].ph_id = i + 1;
+		ph->philos[i].num_of_philos = ph->num_of_philos;
+		ph->philos[i].philo_died = &ph->philo_died;
 		i++;
 	}
+	i = -1;
+	while (++i < ph->num_of_philos)
+		pthread_mutex_init(&ph->philos[i].fork, NULL);
+	i = -1;
+	while (++i < ph->num_of_philos)
+		pthread_create(&ph->philos[i].philo_thread, NULL, philosopher, &ph->philos[i]);
+
 }
 
 int main()
 {
-	var ph;
+	t_var ph;
+
 
 	ph.num_of_philos = 5;
-	ph.philos = malloc(sizeof(philo_attr) * ph.num_of_philos);
+	ph.philos = malloc(sizeof(t_philo_attr) * ph.num_of_philos);
 	if (ph.philos == NULL)
 		return (1);
+	ph.philo_died = 0;
 	init(&ph);
 	terminate(&ph);
 }
