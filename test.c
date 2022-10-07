@@ -71,6 +71,7 @@ void	pick_up_forks_two(t_philo_attr *philo)
 	if (id == ph_num)
 	{
 		id = (id + 1) * -1;
+		//APPLY THIS  5 % -11 + 1
 		//printf("id = %d ph_num = %d for = %d\n", id,ph_num,id % ph_num + 1);
 	}
 	//printf("peh %d\n",(id % ph_num) + 1);
