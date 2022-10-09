@@ -11,7 +11,7 @@ typedef enum status
 typedef struct philo_attr
 {
 	int				ph_id;
-	int				time_last_meal;
+	int				last_eat_time;
 	int				sleep_time;
 	int				eat_time;
 	int				num_of_philos;
@@ -25,12 +25,37 @@ typedef struct variables
 {
 	int				num_of_philos;
 	int				philo_died;
+	int				eat_time;
+	int				sleep_time;
+	int				death_time;
 	pthread_mutex_t lock;
 	t_philo_attr	*philos;
 
-}t_var;
+}t_arg;
 
 void	pick_up_forks(t_philo_attr *);
+long	get_time(void)
+{
+	long				time;
+	struct timeval		current_time;
+
+	time = 0;
+	if (gettimeofday(&current_time, NULL) == -1)
+		ft_error("Gettimeofday returned -1\n");
+	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (time);
+}
+
+void	ft_usleep(long time_in_ms)
+{
+	long start_time;
+
+	start_time = 0;
+	start_time = get_time();
+	while ((get_time() - start_time) < time_in_ms)
+		usleep(time_in_ms / 10);
+}
+
 void    *philosopher(void *param)
 {
 	t_philo_attr *philo = (t_philo_attr *)param;
@@ -49,7 +74,7 @@ void    *philosopher(void *param)
 	return (NULL);
 }
 
-void	terminate(t_var *ph)
+void	terminate(t_arg *ph)
 {
 	int i;
 
@@ -70,22 +95,21 @@ void	pick_up_forks_two(t_philo_attr *philo)
 	ph_num = philo->num_of_philos;
 	if (id == ph_num)
 	{
-		id = (id + 1) * -1;
-		//APPLY THIS  5 % -11 + 1
-		//printf("id = %d ph_num = %d for = %d\n", id,ph_num,id % ph_num + 1);
+		ph_num = (ph_num - 1) * -1;
+		pthread_mutex_lock(&philo->fork);
+		pthread_mutex_lock(&philo[ph_num].fork);
 	}
-	//printf("peh %d\n",(id % ph_num) + 1);
-	pthread_mutex_lock(&philo->fork);
-	pthread_mutex_lock(&philo[id % ph_num + 1].fork);
+	else
+	{
+		pthread_mutex_lock(&philo->fork);
+		pthread_mutex_lock(&philo[id % ph_num + 1].fork);
+	}
+	pthread_mutex_lock(&philo->lock);
 	if (*philo->philo_died != 1)
 	{
-		// printf("%d has taken a fork\n", philo->ph_id);
-		// printf("%d has taken %d philo fork\n",philo->ph_id, philo[id % ph_num  + 1].ph_id);
-		printf("sec philo fork[%d] %p next philo[%d] fork %p\n",id, &philo->fork,id % ph_num + 1, &philo[id % ph_num +1].fork);
-
+		printf("%ld %d has taken a fork!\n",get_time(), philo->ph_id);
 	}
-	pthread_mutex_unlock(&philo->fork);
-	pthread_mutex_unlock(&(philo + id + 1)->fork);
+	pthread_mutex_unlock(&philo->lock);
 }
 
 void	pick_up_forks(t_philo_attr *philo)
@@ -115,7 +139,7 @@ void	pick_up_forks(t_philo_attr *philo)
 		pick_up_forks_two(philo);
 }
 
-void	init(t_var *ph)
+void	init(t_arg *ph)
 {
 	int i;
 
@@ -141,7 +165,7 @@ void	init(t_var *ph)
 
 int main()
 {
-	t_var ph;
+	t_arg ph;
 
 
 	ph.num_of_philos = 5;
