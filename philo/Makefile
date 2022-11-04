@@ -1,24 +1,21 @@
 CC=gcc
 FLAGS= -Wall -Werror -Wextra
-AR= ar rcs
 SRC= init_utils.c \
 philo_and_watcher.c \
 philo_status.c \
-philosophers.c \
 time_func.c \
+philosophers.c
 
 OBJ= $(SRC:.c=.o)
-NAME= philo.a
 COMPILE= philo
 
-all: $(NAME) $(OBJ) philo.h
-	$(CC) $(FLAGS) $(SRC) -o $(OBJ)
+all: $(COMPILE)
+	
+%.o: %.c 
+	$(CC) $(FLAGS) -c $< -o $@
+$(COMPILE): $(OBJ) philo.h
+	$(CC) $(FLAGS) $(OBJ) -o $(COMPILE)
 
-%.o: %.c
-	$(CC) -C $< -o $@
-
-$(COMPILE): $(NAME)
-	$(CC) $(FLAGS) $(NAME) -o $(COMPILE)
 
 clean:
 	$(RM) $(OBJ)

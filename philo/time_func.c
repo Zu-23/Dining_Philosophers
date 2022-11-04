@@ -6,11 +6,11 @@
 /*   By: zhaddoum <zhaddoum@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 19:52:56 by zhaddoum          #+#    #+#             */
-/*   Updated: 2022/11/03 19:53:50 by zhaddoum         ###   ########.fr       */
+/*   Updated: 2022/11/04 20:44:43 by zhaddoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "philo.h"
 
 long int	get_time(void)
 {

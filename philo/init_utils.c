@@ -6,11 +6,19 @@
 /*   By: zhaddoum <zhaddoum@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 19:56:06 by zhaddoum          #+#    #+#             */
-/*   Updated: 2022/11/03 20:00:10 by zhaddoum         ###   ########.fr       */
+/*   Updated: 2022/11/04 20:59:15 by zhaddoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "philo.h"
+
+void	print_status(char *str, t_philo *philo)
+{
+	pthread_mutex_lock(philo->lock);
+	printf("%ld %d %s", get_time() - philo->time_of_start,
+		philo->ph_id + 1, str);
+	pthread_mutex_unlock(philo->lock);
+}
 
 void	mutex_and_philos(t_arg *ph)
 {
