@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS= -Wall -Werror -Wextra
+FLAGS= -Wall -Werror -Wextra -g -pthread
 SRC= init_utils.c \
 philo_and_watcher.c \
 philo_status.c \

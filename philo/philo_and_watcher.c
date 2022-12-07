@@ -6,7 +6,7 @@
 /*   By: zhaddoum <zhaddoum@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 20:02:35 by zhaddoum          #+#    #+#             */
-/*   Updated: 2022/11/04 21:03:37 by zhaddoum         ###   ########.fr       */
+/*   Updated: 2022/12/07 01:39:16 by zhaddoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,14 @@ void	*watcher(void *param)
 	int		i;
 
 	philo = (t_philo *)param;
-	i = 0;
 	while (*philo->philo_died == 0)
 	{
+		if (*philo->philo_died == 1)
+		{
+			pthread_mutex_lock(philo->lock);
+			printf("%d\n",*philo->philo_died);
+			pthread_mutex_unlock(philo->lock);
+		}
 		i = -1;
 		while (++i < philo->ph_total)
 		{
@@ -47,7 +52,7 @@ void	*watcher(void *param)
 				pthread_mutex_lock(philo->lock);
 				printf("%ld %d died\n", get_time()
 					- philo->last_time_eaten, philo[i].ph_id + 1);
-				pthread_mutex_unlock(philo->lock);
+				// pthread_mutex_unlock(philo->lock);
 				return (NULL);
 			}
 		}

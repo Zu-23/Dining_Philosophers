@@ -6,7 +6,7 @@
 /*   By: zhaddoum <zhaddoum@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 19:56:06 by zhaddoum          #+#    #+#             */
-/*   Updated: 2022/11/04 20:59:15 by zhaddoum         ###   ########.fr       */
+/*   Updated: 2022/12/07 01:51:45 by zhaddoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ void	threads_init(t_arg *ph)
 	ph->threads = malloc(sizeof(pthread_t) * ph->ph_total);
 	i = -1;
 	while (++i < ph->ph_total)
-	{
 		pthread_create(&ph->threads[i], NULL, philosopher, &ph->philo[i]);
-	}
 	pthread_create(&the_watcher, NULL, watcher, ph->philo);
 	pthread_join(the_watcher, NULL);
 }
@@ -86,10 +84,10 @@ int	get_args(int argc, char **argv, t_arg *ph)
 			return (1);
 		i++;
 	}
-	ph->ph_total = atoi(argv[1]);
-	ph->death_time = atoi(argv[2]);
-	ph->eat_time = atoi(argv[3]);
-	ph->sleep_time = atoi(argv[4]);
+	ph->ph_total = ft_atoi(argv[1]);
+	ph->death_time = ft_atoi(argv[2]);
+	ph->eat_time = ft_atoi(argv[3]);
+	ph->sleep_time = ft_atoi(argv[4]);
 	ph->philo_died = 0;
 	if (argc == 5 && ph->ph_total < 1)
 		return (1);

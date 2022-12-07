@@ -6,7 +6,7 @@
 /*   By: zhaddoum <zhaddoum@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 21:05:04 by zhaddoum          #+#    #+#             */
-/*   Updated: 2022/11/04 21:35:11 by zhaddoum         ###   ########.fr       */
+/*   Updated: 2022/12/07 01:53:01 by zhaddoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,6 @@ void		pick_forks_two(t_philo *philo);
 void		ft_usleep(long int time_in_ms);
 long int	get_time(void);
 void		print_status(char *str, t_philo *philo);
+int			ft_atoi(const char *str);
+
 #endif

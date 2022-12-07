@@ -6,40 +6,24 @@
 /*   By: zhaddoum <zhaddoum@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 20:04:59 by zhaddoum          #+#    #+#             */
-/*   Updated: 2022/11/04 21:02:23 by zhaddoum         ###   ########.fr       */
+/*   Updated: 2022/12/07 01:37:22 by zhaddoum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	pick_forks_two(t_philo *philo)
+void	pick_up_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	pthread_mutex_lock(philo->right_fork);
-	pthread_mutex_lock(philo->lock);
 	if (*philo->philo_died == 0)
 	{
-		printf("%ld %d has taken a fork\n", get_time() - philo->time_of_start,
-			philo->ph_id + 1);
-	}
-	pthread_mutex_unlock(philo->lock);
-}
-
-void	pick_up_forks(t_philo *philo)
-{
-	if ((philo->ph_id) % 2 == 0 && philo->ph_id + 1 != philo->ph_total)
-	{
-		pthread_mutex_lock(philo->left_fork);
-		pthread_mutex_lock(philo->right_fork);
-		if (*philo->philo_died == 0)
-		{
-			pthread_mutex_lock(philo->lock);
-			printf("%ld %d has taken a fork\n", get_time()
-				- philo->time_of_start, philo->ph_id + 1);
-			pthread_mutex_unlock(philo->lock);
-		}
-		else
-			pick_forks_two(philo);
+		pthread_mutex_lock(philo->lock);
+		printf("%ld %d has taken a fork\n", get_time()
+			- philo->time_of_start, philo->ph_id + 1);
+		printf("%ld %d has taken a fork\n", get_time()
+			- philo->time_of_start, philo->ph_id + 1);
+		pthread_mutex_unlock(philo->lock);
 	}
 }
 
@@ -57,4 +41,6 @@ void	eat_sleep_think(t_philo *philo)
 	if (*philo->philo_died != 0)
 		return ;
 	print_status("is thinking\n", philo);
+	if (*philo->philo_died != 0)
+		return ;
 }
